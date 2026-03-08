@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install -D prisma next-mdx-remote 2>&1)",
+      "Bash(npm install next-mdx-remote gray-matter reading-time 2>&1)",
+      "Bash(npx prisma init --datasource-provider postgresql 2>&1)",
+      "Bash(npx tsc --noEmit 2>&1)",
+      "Bash(npm run dev)",
+      "Bash(lsof -ti :3000 && echo \"Server running on 3000\")"
+    ]
+  }
+}
