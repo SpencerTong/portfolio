@@ -18,6 +18,7 @@ export interface BlogPost {
   date: string;
   tags: string[];
   readingTime: string;
+  series?: string;
   content?: string;
 }
 

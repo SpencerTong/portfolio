@@ -1,0 +1,37 @@
+---
+title: "PostgreSQL Indexing for App Developers"
+description: "You don't need to be a DBA to stop writing slow queries. A practical guide to the indexes that matter most for typical web apps."
+date: "2024-10-03"
+series: "misc"
+tags: ["PostgreSQL", "Performance", "Backend"]
+---
+
+Most performance problems I've seen in web apps aren't algorithmic — they're a missing index on a column that gets filtered or sorted on every request.
+
+## The Two You'll Use Most
+
+**B-tree indexes** are the default and handle equality and range queries. If you're filtering or sorting by a column regularly, it probably needs one.
+
+**Partial indexes** are underused. If you're frequently querying `WHERE status = 'active'`, you don't need to index every row — just the active ones:
+
+```sql
+CREATE INDEX idx_users_active ON users (created_at) WHERE status = 'active';
+```
+
+## How to Find Missing Indexes
+
+`EXPLAIN ANALYZE` is your friend. Look for `Seq Scan` on large tables — that's usually where to start.
+
+```sql
+EXPLAIN ANALYZE SELECT * FROM orders WHERE user_id = 123;
+```
+
+## Composite Indexes and Column Order
+
+Order matters. An index on `(user_id, created_at)` can serve queries filtering by `user_id` alone, but not queries filtering only by `created_at`.
+
+Put the most selective column first unless your query pattern dictates otherwise.
+
+## When Not to Index
+
+Writes get slower with each index. On tables that get hammered with inserts (like an events table), be selective. Profile before you add.
