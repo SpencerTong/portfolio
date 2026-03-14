@@ -75,6 +75,32 @@ function PostCard({ post, index }: { post: BlogPost; index: number }) {
   );
 }
 
+function ComingSoonCard() {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-60px" });
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 32 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] as Easing }}
+      className="flex flex-col gap-4 p-8 rounded-2xl bg-[#f0ede8] border border-dashed border-[#c8c0b6]"
+    >
+      <p className="font-mono text-xs text-[#b8b0a6] tracking-widest uppercase">
+        First article
+      </p>
+      <h3 className="font-display font-bold text-xl text-[#9b8d84] leading-snug">
+        Something is being written.
+      </h3>
+      <p className="text-[#b8b0a6] text-sm leading-relaxed max-w-sm">
+        I write about full-stack engineering, systems design, and things I learn
+        building products. First piece drops soon.
+      </p>
+    </motion.div>
+  );
+}
+
 export default function BlogPreview({ posts }: { posts: BlogPost[] }) {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
@@ -125,11 +151,15 @@ export default function BlogPreview({ posts }: { posts: BlogPost[] }) {
         </div>
 
         {/* Post cards */}
-        <div className="grid md:grid-cols-3 gap-5">
-          {posts.map((post, i) => (
-            <PostCard key={post.slug} post={post} index={i} />
-          ))}
-        </div>
+        {posts.length > 0 ? (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {posts.map((post, i) => (
+              <PostCard key={post.slug} post={post} index={i} />
+            ))}
+          </div>
+        ) : (
+          <ComingSoonCard />
+        )}
       </div>
     </section>
   );

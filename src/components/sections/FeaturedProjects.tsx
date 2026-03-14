@@ -33,6 +33,63 @@ function GitHubIcon() {
   );
 }
 
+const PLACEHOLDER_COUNT = 3;
+
+function PlaceholderProjectCard({ accent, index }: { accent: typeof ACCENTS[0]; index: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-80px" });
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 40 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+      transition={{ duration: 0.65, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] as Easing }}
+      className="group relative rounded-2xl bg-[#f0ede8] border border-dashed border-[#c8c0b6] overflow-hidden flex flex-col opacity-60"
+    >
+      {/* Top gradient bar */}
+      <div className={`h-px w-full bg-gradient-to-r ${accent.from} ${accent.to} opacity-30`} />
+
+      {/* Placeholder image area */}
+      <div className={`relative h-48 bg-gradient-to-br ${accent.from}/5 ${accent.to}/5 flex items-center justify-center overflow-hidden`}>
+        <div className="flex flex-col items-center gap-2 text-center px-4">
+          <div className={`w-8 h-8 rounded-full bg-gradient-to-br ${accent.from}/20 ${accent.to}/20 flex items-center justify-center`}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-[#b8b0a6]">
+              <path d="M12 5v14M5 12h14" strokeLinecap="round" />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="flex flex-col flex-1 p-6 gap-4">
+        <div>
+          <div className="flex items-center gap-2 mb-2">
+            <h3 className="font-display font-bold text-xl text-[#9b8d84]">
+              Something&apos;s brewing
+            </h3>
+          </div>
+          <p className="text-[#b8b0a6] text-sm leading-relaxed">
+            Another project is in the works. Check back soon.
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-1.5">
+          {["???", "???", "???"].map((t, i) => (
+            <span key={i} className="px-2.5 py-1 rounded-md text-xs font-mono text-[#c8c0b6] bg-[#faf9f7] border border-[#e8e3dc]">
+              {t}
+            </span>
+          ))}
+        </div>
+        <div className="mt-auto pt-2">
+          <span className="inline-flex items-center gap-1.5 text-xs font-mono text-[#b8b0a6] px-3 py-1.5 rounded-lg border border-dashed border-[#ddd8d0]">
+            Coming soon
+          </span>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 function ProjectCard({ project, accent, index }: { project: Project; accent: typeof ACCENTS[0]; index: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
@@ -183,6 +240,13 @@ export default function FeaturedProjects() {
               project={project}
               accent={ACCENTS[i % ACCENTS.length]}
               index={i}
+            />
+          ))}
+          {Array.from({ length: Math.max(0, PLACEHOLDER_COUNT - FEATURED.length) }).map((_, i) => (
+            <PlaceholderProjectCard
+              key={`placeholder-${i}`}
+              accent={ACCENTS[(FEATURED.length + i) % ACCENTS.length]}
+              index={FEATURED.length + i}
             />
           ))}
         </div>
